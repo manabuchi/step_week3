@@ -56,7 +56,9 @@ def tokenize(line):
         elif line[index] == '(':
             (token, index) = read_startparen(line, index)
         elif line[index] == ')':
-            (token, index) = read_endparen(line, index)        
+            (token, index) = read_endparen(line, index)
+        elif line[index] == ' ': #skip space
+            continue        
         else:
             print('Invalid character found: ' + line[index])
             exit(1)
@@ -66,7 +68,7 @@ def tokenize(line):
 
 def evaluate_expression(tokens, start=0):
     new_tokens = []
-    index = start
+    index = start 
     while index < len(tokens):
         token = tokens[index]
         if token['type'] == 'STARTPAREN':
@@ -74,6 +76,7 @@ def evaluate_expression(tokens, start=0):
             sub_tokens, next_index = evaluate_expression(tokens, index + 1)
             value = evaluate_plus_and_minus(evaluate_times_and_divide(sub_tokens))
             new_tokens.append({'type': 'NUMBER', 'number': value})
+            print(new_tokens)
             index = next_index
         elif token['type'] == 'ENDPAREN':
             return new_tokens, index + 1
@@ -162,7 +165,7 @@ def run_test():
     test("3.0+4*2")
     test("3.0+4*2-1/5")
     test("1.0+2.1-3")
-    # with parenthesis
+    # # with parenthesis
     test("(1+2)")
     test("(3+4)*2")
     test("1+(2*3)")
@@ -173,8 +176,8 @@ def run_test():
     test("1+(2+(3+(4+5)))")
     test("(1+(2*(3+(4*5))))")
     test("(((((((1)))))))")    
-    test("1 + ((2 + 3) * (4 + 5))")
-    test("1 + (2 + 3 * (4 + (5 - 6)))")
+    test("1+((2+3)*(4+5))")
+    test("1+(2+3*(4+(5-6)))")
     print("==== Test finished! ====\n")
 
 run_test()
